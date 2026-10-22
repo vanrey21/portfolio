@@ -135,7 +135,8 @@ CSS = r"""
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{overflow-x:clip}
 body{background:radial-gradient(900px 480px at 78% 0%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%) no-repeat,var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
