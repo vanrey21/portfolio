@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Reyson Angeles</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="GoHighLevel Expert &amp; Automation Specialist. CRM workflows, integrations and AI automation for US clients.">
@@ -155,8 +160,15 @@ footer.site{border-top:1px solid var(--line);padding-top:28px;display:flex;flex-
   .case>div:first-child{animation:from-left linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
   .case .rows{animation:from-right linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
 }
+.js-anim .rv{opacity:0;transform:translateY(56px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.js-anim .rv-l{transform:translateX(-64px)}
+.js-anim .rv-r{transform:translateX(64px)}
+.js-anim .rv.in{opacity:1;transform:none}
+.js-anim .bar::after{transform:scaleX(var(--p,0))}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}*,*::before,*::after{animation:none!important}}
 </style>
+</head>
+<body>
 
 <header class="bar"><div class="wrap">
   <a class="logo" href="#top">Reyson<span>.</span></a>
@@ -262,4 +274,39 @@ footer.site{border-top:1px solid var(--line);padding-top:28px;display:flex;flex-
     try{navigator.clipboard.writeText(t).then(done,fail);}catch(e){fail();}
   });
 })();
+
+/* Scroll motion fallback for browsers without CSS scroll-driven animations. */
+(function(){
+  var native=window.CSS&&CSS.supports&&CSS.supports('animation-timeline: view()');
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(native||still)return;
+  var root=document.documentElement;
+  root.classList.add('js-anim');
+  var sel='.sec-head,.card,.step,.why>div,.pstats>div,.contact>*,.stack,.case>div:first-child,.case .rows';
+  var els=[].slice.call(document.querySelectorAll(sel));
+  els.forEach(function(el){
+    el.classList.add('rv');
+    if(el.matches('.case>div:first-child'))el.classList.add('rv-l');
+    if(el.matches('.case .rows'))el.classList.add('rv-r');
+  });
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+    els.forEach(function(el){io.observe(el);});
+  }else{els.forEach(function(el){el.classList.add('in');});}
+  var hero=document.querySelector('.hero>div:first-child'),trace=document.querySelector('.trace'),bar=document.querySelector('.bar'),tick=false;
+  function frame(){
+    tick=false;
+    var y=window.pageYOffset||0,h=Math.max(1,window.innerHeight*0.85),t=Math.min(1,y/h);
+    var max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    if(hero){hero.style.transform='translateY('+(-90*t)+'px)';hero.style.opacity=String(1-0.85*t);}
+    if(trace)trace.style.transform='translateY('+(60*t)+'px)';
+    bar.style.setProperty('--p',String(Math.min(1,y/max)));
+  }
+  window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(frame);}},{passive:true});
+  frame();
+})();
 </script>
+</body>
+</html>
