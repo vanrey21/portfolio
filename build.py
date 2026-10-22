@@ -124,26 +124,19 @@ STACK = ["GoHighLevel", "Zapier", "n8n", "Make.com", "OpenAI", "Airtable", "Acti
 
 CSS = r"""
 :root{
-  /* Layout: sticky bar, split hero with a live workflow trace, ruled case-file list, one dark proof panel. */
-  --bg:#F2F4F3; --surface:#FFFFFF; --fg:#0E1A1C; --muted:#52615F; --line:#D3DAD8;
-  --accent:#2748E8; --accent-fg:#FFFFFF; --accent-soft:#E3E8FD; --ok:#1B7F4B;
-  --panel:#0E1A1C; --panel-fg:#EAF0EE; --panel-muted:#9FB0AC; --panel-line:#27383A;
+  /* Layout: sticky bar, split hero with a live workflow trace, ruled case-file list, one raised proof panel. Dark only. */
+  --bg:#070D0F; --surface:#0F181B; --fg:#E8EFED; --muted:#93A4A1; --line:#1F2F32;
+  --accent:#8EA2FF; --accent-fg:#071016; --accent-soft:#18214A; --ok:#5ED394;
+  --panel:#101D21; --panel-fg:#EAF0EE; --panel-muted:#9FB0AC; --panel-line:#2B4044;
   --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
   --body:'Instrument Sans','Segoe UI',system-ui,sans-serif;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0B1213; --surface:#121C1E; --fg:#E8EFED; --muted:#98A9A6; --line:#243436;
-  --accent:#7D93FF; --accent-fg:#0B1213; --accent-soft:#1B2552; --ok:#5ED394;
-  --panel:#16262A; --panel-fg:#EAF0EE; --panel-muted:#9FB0AC; --panel-line:#2B4044; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0B1213; --surface:#121C1E; --fg:#E8EFED; --muted:#98A9A6; --line:#243436;
-  --accent:#7D93FF; --accent-fg:#0B1213; --accent-soft:#1B2552; --ok:#5ED394;
-  --panel:#16262A; --panel-fg:#EAF0EE; --panel-muted:#9FB0AC; --panel-line:#2B4044; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;
+body{background:radial-gradient(900px 480px at 78% 0%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%) no-repeat,var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
 a{color:inherit}
@@ -161,9 +154,10 @@ p{margin:0}
 .nav a:hover{color:var(--fg)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:6px;font-weight:600;font-size:.95rem;
   text-decoration:none;border:1px solid var(--fg);color:var(--fg);background:transparent;cursor:pointer;font-family:var(--body)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.primary{box-shadow:0 0 24px color-mix(in srgb,var(--accent) 30%,transparent);background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
 .btn:hover{transform:translateY(-1px)}
 .bar .btn{padding:9px 16px}
+.bar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:0 50%}
 
 .hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center;padding-block:72px 64px}
 .avail{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -265,7 +259,23 @@ footer.site{border-top:1px solid var(--line);padding-top:28px;display:flex;flex-
   .step:first-child{border-top:0}
   section{padding-block:52px}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}}
+
+/* Scroll-driven motion. Browsers without support just show everything at rest. */
+@keyframes rise{from{opacity:0;transform:translateY(56px)}to{opacity:1;transform:none}}
+@keyframes from-left{from{opacity:0;transform:translateX(-64px)}to{opacity:1;transform:none}}
+@keyframes from-right{from{opacity:0;transform:translateX(64px)}to{opacity:1;transform:none}}
+@keyframes drift{from{opacity:1;transform:none}to{opacity:.15;transform:translateY(-90px)}}
+@keyframes drift-slow{from{transform:none}to{transform:translateY(60px)}}
+@keyframes progress{to{transform:scaleX(1)}}
+@supports (animation-timeline:view()){
+  .bar::after{animation:progress linear both;animation-timeline:scroll(root)}
+  .hero>div:first-child{animation:drift linear both;animation-timeline:scroll(root);animation-range:0 85vh}
+  .trace{animation:drift-slow linear both;animation-timeline:scroll(root);animation-range:0 85vh}
+  .sec-head,.card,.step,.why>div,.pstats>div,.contact>*,.stack{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+  .case>div:first-child{animation:from-left linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
+  .case .rows{animation:from-right linear both;animation-timeline:view();animation-range:entry 0% entry 50%}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn:hover{transform:none}*,*::before,*::after{animation:none!important}}
 """
 
 def tags(items):
