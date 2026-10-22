@@ -12,11 +12,8 @@ Open `index.html` in a browser. No dependencies are needed.
 
 ## Publish with GitHub Pages
 
-1. Create a new empty repository on GitHub (for example `portfolio`).
-2. Upload or push these files: `build.py`, `README.md` and `.github/workflows/pages.yml`.
-3. In the repository, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
-4. Push to the `main` branch. The workflow runs `build.py` and deploys the site.
+1. In the repository, open **Settings → Pages**.
+2. Set **Source** to **Deploy from a branch**, then choose branch `main` and folder `/ (root)`.
+3. The site appears at `https://<your-username>.github.io/<repository-name>/`.
 
-The public address appears in the workflow run and under Settings → Pages, usually `https://<your-username>.github.io/<repository-name>/`.
-
-To change the site, edit the data at the top of `build.py` and push again.
+To change the site, edit the data at the top of `build.py`, run `python3 build.py`, and commit both `build.py` and the regenerated `index.html`.
